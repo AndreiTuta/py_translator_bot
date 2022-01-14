@@ -52,7 +52,13 @@ def translate_message(message):
     try:
         t = chat_translators[cid]
         message_text = message.text.replace('/translate','')
-        bot.reply_to(message, t.translate_message(message_text, t.dict.language))
+        if len(message_text) > 0:
+            msg = t.translate_message(message_text, t.dict.language)
+            if len(msg) <= 0:
+                msg = f"Error translating {message_text}"
+            bot.reply_to(message, msg)
+        else: 
+            bot.reply_to(message, "You need to pass something to be translated")
     except KeyError:
         pass
 
