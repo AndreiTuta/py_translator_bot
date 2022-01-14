@@ -18,8 +18,10 @@ class Translator():
                     translation = self.translate_word(word, lang)
                     if translation is None:
                         raise Exception("Translation language not found in dictionary")
-                    logging.info(f'Processing translation for {translation}')
+                    logger.info(f'Processing translation for {translation}')
                     translated_message.append(translation)
+                else: 
+                    logger.info(f'Word {word} is an emoji, so not translating')
             return ' '.join(translated_message)
 
     def translate_word(self, message_word, lang):
@@ -32,13 +34,13 @@ class Translator():
                 translation = self.translate_deepl(message_word)
                 if translation is not None:
                     self.dict.add_word(new_word, translation)
-                    logging.info(f"Adding a new word to dictionary")
+                    logger.info(f"Adding a new word to dictionary")
                     self.dict.save_words()
                     return translation
                 else:
                     return None
         else:
-            logging.info("Language not found.")
+            logger.info("Language not found.")
             return None
 
     def translate_deepl(self, word):
@@ -48,8 +50,8 @@ class Translator():
             text = response.json()
             translations = text['translations']
             translation = translations[0]['text']
-            logging.info(f"Processed translation for {word} using DeepL: {translation}")
+            logger.info(f"Processed translation for {word} using DeepL: {translation}")
             return translation
         else:
-            logging.info(f"Error translating {word}")
+            logger.info(f"Error translating {word}")
             return None

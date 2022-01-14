@@ -2,8 +2,7 @@ from asyncio.log import logger
 import logging
 
 from pathlib import Path
-from emoji import UNICODE_EMOJI
-
+import emoji
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ class Dictionary():
             logging.info("Not updating word file.")
 
     def is_emoji(self, word):
-        return word in UNICODE_EMOJI
+        return emoji.demojize(word) != word
 
     def get_word(self, word):
         try:
