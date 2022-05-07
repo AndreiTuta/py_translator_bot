@@ -1,7 +1,8 @@
-from dictionary import Dictionary
 
 import logging 
 import requests 
+
+from .dictionary import Dictionary
 
 logger = logging.getLogger(__name__)
 

@@ -6,8 +6,8 @@ import os
 
 from datetime import datetime
 
-from dictionary import Dictionary
-from translator import Translator
+from thesaurus.dictionary import Dictionary
+from thesaurus.translator import Translator
 
 # logger
 logger = logging.getLogger()
@@ -40,7 +40,7 @@ def identify(message):
     args = tBot.extract_arg(message.text)
     if(len(args) == 1):
         arg = str(args[0])
-        t = Translator(Dictionary(arg), os.environ["DEEPL_KEY"])
+        t = Translator(Dictionary(arg), os.environ["DEEPL_KEY"])       
         chat_translators[cid] = t
         bot.reply_to(message, f"Created translator for {cid} and language {arg}")
     else:

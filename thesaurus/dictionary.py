@@ -1,8 +1,8 @@
 from asyncio.log import logger
-import logging
-
 from pathlib import Path
+
 import emoji
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ class Dictionary():
     def load_words(self):
         words = {}
         try:
-            with open(self.dict_loc) as fp:
+            with open(self.dict_loc, "r", encoding="utf-8") as fp:
                 logger.info(f'Processing dictionary at {self.dict_loc}')
                 while True:
                     line = fp.readline()        
