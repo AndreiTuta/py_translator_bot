@@ -1,28 +1,14 @@
-from csv import Dialect
-import telebot
-import requests
 import logging
 import os
 
 from datetime import datetime
 
 from thesaurus.dictionary import Dictionary
-from thesaurus.translator import Translator
+from thesaurus.translator import Translator, TranslatorBot
 
 # logger
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-""" Wrapper class for the telebot. Used for processing messages """
-class TranslatorBot():
-    def __init__(self, api_key) -> None:
-        self.bot = telebot.TeleBot(api_key, threaded=False)
-        logging.info('Initialised telebot')
-
-    # method used to parse arguments passed after the command
-    def extract_arg(self, arg):
-        logging.info(f'processing args: {arg}')
-        return arg.split()[1:]
 
 tBot = TranslatorBot(os.environ["TELEGRAM_KEY"])
 bot = tBot.bot
@@ -30,7 +16,7 @@ chat_translators = {}
 
 @bot.message_handler(commands=['help', 'start', 'info'])
 def get_help(message):
-    help_info =  f"""/help /start /info - displays the menu \n /identify [iso lang code]- adds the current chat into a list of translators by creating a translator from [iso lang code] to EN \n /translate [message] - returns the translation of the message to english"""
+    help_info =  f"""/help /start /info - displays the menu \n /identify [iso lang code]- adds the current chat into a list of translators by creating a translator from [iso lang code] to EN \n /identify me- Returns a list of bots currently available for this conversation \n /translate [message] - returns the translation of the message to english"""
    
     bot.reply_to(message, help_info)
 
@@ -40,9 +26,15 @@ def identify(message):
     args = tBot.extract_arg(message.text)
     if(len(args) == 1):
         arg = str(args[0])
-        t = Translator(Dictionary(arg), os.environ["DEEPL_KEY"])       
-        chat_translators[cid] = t
-        bot.reply_to(message, f"Created translator for {cid} and language {arg}")
+        if(arg == 'me'):
+            try: 
+                bot.reply_to(message, f"Translators for {cid}: {chat_translators[cid].dict.language}")
+            except KeyError:                
+                bot.reply_to(message, f" No Translators for {cid}")
+        else:
+            t = Translator(Dictionary(arg), os.environ["DEEPL_KEY"])
+            chat_translators[cid] = t
+            bot.reply_to(message, f"Created translator for {cid} and language {arg}")
     else:
         bot.reply_to(message, "Please pass a second param to initialise the translator")
 

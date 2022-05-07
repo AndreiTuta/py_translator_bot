@@ -1,6 +1,7 @@
 
 import logging 
 import requests 
+import telebot
 
 from .dictionary import Dictionary
 
@@ -56,3 +57,14 @@ class Translator():
         else:
             logger.info(f"Error translating {word}")
             return None
+        
+""" Wrapper class for the telebot. Used for processing messages """
+class TranslatorBot():
+    def __init__(self, api_key) -> None:
+        self.bot = telebot.TeleBot(api_key, threaded=False)
+        logging.info('Initialised telebot')
+
+    # method used to parse arguments passed after the command
+    def extract_arg(self, arg):
+        logging.info(f'processing args: {arg}')
+        return arg.split()[1:]
