@@ -1,1 +1,4 @@
 env
+dictionary/*.txt
+# to avoid making changes in the handlers
+telegram.py

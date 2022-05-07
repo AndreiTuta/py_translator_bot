@@ -14,14 +14,14 @@ class Translator():
         if message is not None:
             translated_message = []
             for word in message.split(' '):
-                if not self.dict.is_emoji(word):
+                if not self.dict.is_emoji(word) and self.dict.is_clean(word):
                     translation = self.translate_word(word, lang)
-                    if translation is None:
-                        raise Exception("Translation language not found in dictionary")
+                    if translation is None or translation == '':
+                        translation = f"[{word} couldn't be translated]"
                     logger.info(f'Processing translation for {translation}')
                     translated_message.append(translation)
                 else: 
-                    logger.info(f'Word {word} is an emoji, so not translating')
+                    logger.info(f'Word {word} is an character/emoji, so not translating')
             return ' '.join(translated_message)
 
     def translate_word(self, message_word, lang):
